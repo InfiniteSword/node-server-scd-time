@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Artical</title>
+	<style type="text/css">
+		.ctn{
+			width: 980px;
+			margin: auto;
+			font-family: Arial,sans-serif;
+		}
+		p{
+			line-height: 2;
+		}
+		small{
+			float: right;
+			font-weight: 100;
+		}
+		.code{
+			padding: 1px 50px;
+			display: block;
+			width: auto;
+			height: auto;
+			background: #eee;
+			border-left: 2px #888 solid;
+			color: #444;
+			font-size: smaller;
+		}
+		.code p{
+			line-height: 1.2;
+		}
+	</style>
+</head>
+<body>
+<div class="ctn">
+	<h1>关于placeholder的兼容实现<small>-15.04.20</small></h1>
+	<p>今天写一个表单样式的时候遇到了js事件监听函数的兼容性问题，记录下来。</p>
+	<p>由于input标签的placeholder属性在早期的ie浏览器是没有的，于是我采用js修改input标签的value值来模拟placeholder的效果。</p>
+	<p>我的思路是先判断浏览器是否支持addEventListener,如果支持，则使用它，而且火狐和谷歌浏览器对placeholder属性都能很好地支持，不支持addEventListener就使用attachEvent来添加事件，同时用js模拟placeholder效果。这样理应是没问题的，但是在ie9下的input里始终是空白的，ie10和ie8都会出现内容。</p>
+	<p>反复检查代码之后，想到了一种可能性，于是把判断改成了先判断浏览器是否支持attachEvent，不支持则用另一个。果然，ie9下成功出现了placeholder的效果。</p>
+	<p>如我想的一样，ie9已经开始支持addEventListener的事件监听，但是却并不支持placeholder属性，在我之前的思路里，它根本没有经过我模拟placeholder的代码_(:3」∠)_。</p>
+	<p>附代码：</p>
+	<div class="code">
+		<p>if (document.attachEvent) {</p>
+		<p>num.value = " Number";</p>
+		<p>email.value = " Email";</p>
+		<p>num.attachEvent("onfocusin", function() {</p>
+		<p>	num.value = "";</p>
+		<p>});</p>
+		<p>num.attachEvent("onfocusout", function() {</p>
+		<p>	num.value = " Number";</p>
+		<p>});</p>
+		<p>email.attachEvent("onfocusin", function() {</p>
+		<p>	email.value = "";</p>
+		<p>});</p>
+		<p>email.attachEvent("onfocusout", function() {</p>
+		<p>	email.value = " Email";</p>
+		<p>});</p>
+		<p>}</p>
+	</div>
+</div>
+</body>
+</html>
